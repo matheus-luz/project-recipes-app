@@ -4,7 +4,7 @@ import Header from '../../components/Header';
 function FoodByOrigin() {
   return (
     <div>
-      <Header title="local de origem" />
+      <Header title="Explorar Origem" isSearchEnabled />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import Header from '../../components/Header';
 function DrinkByIngredient() {
   return (
     <div>
-      <Header title="bebidas por ingrediente" />
+      <Header title="Explorar Ingredientes" />
     </div>
   );
 }

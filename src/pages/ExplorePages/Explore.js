@@ -4,7 +4,7 @@ import Header from '../../components/Header';
 function Explore() {
   return (
     <div>
-      <Header title="Explore" />
+      <Header title="Explorar" />
     </div>
   );
 }
