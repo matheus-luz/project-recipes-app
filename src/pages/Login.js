@@ -18,7 +18,8 @@ function Login({ history, setEmailUser }) {
 
   const isDisabled = passwordCheck && validarEmail(email);
 
-  function handleSubmit() {
+  function handleSubmit(event) {
+    event.preventDefault();
     localStorage.setItem('mealsToken', 1);
     localStorage.setItem('cocktailsToken', 1);
     localStorage.setItem('user', JSON.stringify({ email }));
@@ -28,7 +29,7 @@ function Login({ history, setEmailUser }) {
 
   return (
     <section>
-      <form>
+      <form onSubmit={ handleSubmit }>
         <label htmlFor="email">
           <input
             onChange={ ({ target }) => setEmail(target.value) }
@@ -49,9 +50,8 @@ function Login({ history, setEmailUser }) {
         </label>
         <button
           disabled={ !isDisabled }
-          type="button"
+          type="submit"
           data-testid="login-submit-btn"
-          onClick={ handleSubmit }
         >
           Entrar
         </button>
