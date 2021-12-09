@@ -54,7 +54,6 @@ function Login({ history, setEmailUser }) {
           onClick={ handleSubmit }
         >
           Entrar
-
         </button>
       </form>
     </section>
