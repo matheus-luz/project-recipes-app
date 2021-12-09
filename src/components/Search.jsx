@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   fetchApi,
   INGREDIENT_URL,
   NAME_URL,
   FIRST_LETTER_URL,
+  getLink,
 } from '../helpers/fetchApi';
 
 function Search() {
   const [input, setInput] = useState('');
   const [filter, setFilter] = useState('');
+  const { location: { pathname } } = useHistory();
 
   function handleSearch() {
     if (filter === FIRST_LETTER_URL && input.length > 1) {
@@ -32,7 +35,7 @@ function Search() {
           type="radio"
           name="filter-type"
           id="ingredient-search"
-          onChange={ () => setFilter(INGREDIENT_URL) }
+          onChange={ () => setFilter(getLink('ingredient', pathname)) }
         />
       </label>
       <label htmlFor="name-search">
@@ -42,7 +45,7 @@ function Search() {
           type="radio"
           name="filter-type"
           id="name-search"
-          onChange={ () => setFilter(NAME_URL) }
+          onChange={ () => setFilter(getLink('name', pathname)) }
         />
       </label>
       <label htmlFor="first-letter-search">
@@ -52,7 +55,7 @@ function Search() {
           type="radio"
           name="filter-type"
           id="first-letter-search"
-          onChange={ () => setFilter(FIRST_LETTER_URL) }
+          onChange={ () => setFilter(getLink('first-letter', pathname)) }
         />
       </label>
       <button
