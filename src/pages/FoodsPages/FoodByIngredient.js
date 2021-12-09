@@ -1,8 +1,11 @@
 import React from 'react';
+import Header from '../../components/Header';
 
 function FoodByIngredient() {
   return (
-    <div />
+    <div>
+      <Header title="comida por ingrediente" />
+    </div>
   );
 }
 
