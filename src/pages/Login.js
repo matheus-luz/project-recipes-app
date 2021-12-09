@@ -28,7 +28,7 @@ function Login({ history, setEmailUser }) {
 
   return (
     <section>
-      <form>
+      <form onSubmit={ handleSubmit }>
         <label htmlFor="email">
           <input
             onChange={ ({ target }) => setEmail(target.value) }
@@ -49,9 +49,8 @@ function Login({ history, setEmailUser }) {
         </label>
         <button
           disabled={ !isDisabled }
-          type="button"
+          type="submit"
           data-testid="login-submit-btn"
-          onClick={ handleSubmit }
         >
           Entrar
 
