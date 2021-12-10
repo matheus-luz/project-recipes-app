@@ -94,4 +94,3 @@ Search.propTypes = {
 }.isRequired;
 
 export default Search;
-
