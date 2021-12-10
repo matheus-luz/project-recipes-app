@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   fetchApi,
-  INGREDIENT_URL,
-  NAME_URL,
-  FIRST_LETTER_URL,
-  getLink,
+  getIngredientLink,
+  getNameLink,
+  getFirstLetterLink,
+  FOOD_FIRST_LETTER_URL,
+  DRINK_FIRST_LETTER_URL,
 } from '../helpers/fetchApi';
 
 function Search() {
@@ -14,12 +15,14 @@ function Search() {
   const { location: { pathname } } = useHistory();
 
   function handleSearch() {
-    if (filter === FIRST_LETTER_URL && input.length > 1) {
+    if ((filter === FOOD_FIRST_LETTER_URL || filter === DRINK_FIRST_LETTER_URL)
+      && input.length > 1) {
       global.alert('Sua busca deve conter somente 1 (um) caracter');
     } else {
       fetchApi(`${filter}${input}`);
     }
   }
+
   return (
     <div>
       <input
@@ -35,7 +38,7 @@ function Search() {
           type="radio"
           name="filter-type"
           id="ingredient-search"
-          onChange={ () => setFilter(getLink('ingredient', pathname)) }
+          onChange={ () => setFilter(getIngredientLink(pathname)) }
         />
       </label>
       <label htmlFor="name-search">
@@ -45,7 +48,7 @@ function Search() {
           type="radio"
           name="filter-type"
           id="name-search"
-          onChange={ () => setFilter(getLink('name', pathname)) }
+          onChange={ () => setFilter(getNameLink(pathname)) }
         />
       </label>
       <label htmlFor="first-letter-search">
@@ -55,7 +58,7 @@ function Search() {
           type="radio"
           name="filter-type"
           id="first-letter-search"
-          onChange={ () => setFilter(getLink('first-letter', pathname)) }
+          onChange={ () => setFilter(getFirstLetterLink(pathname)) }
         />
       </label>
       <button
