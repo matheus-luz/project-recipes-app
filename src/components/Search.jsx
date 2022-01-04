@@ -34,7 +34,9 @@ function Search({ title }) {
   }
 
   useEffect(() => {
-    if (requestAPI.length === 1) {
+    if (requestAPI === null) {
+      global.alert('Sinto muito, não encontramos nenhuma receita para esses filtros.');
+    } else if (requestAPI.length === 1) {
       const id = Object.values(requestAPI[0])[0];
       history.push(`/${title.toLowerCase()}/${id}`);
     }

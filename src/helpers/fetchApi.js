@@ -20,11 +20,7 @@ export function getFirstLetterLink(pathname) {
 }
 
 export async function fetchApi(endpoint) {
-  try {
-    const response = await fetch(endpoint);
-    const result = await response.json();
-    return Object.values(result)[0];
-  } catch (err) {
-    global.alert(err);
-  }
+  const response = await fetch(endpoint);
+  const result = await response.json();
+  return Object.values(result)[0];
 }
