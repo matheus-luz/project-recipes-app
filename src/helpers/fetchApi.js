@@ -22,5 +22,5 @@ export function getFirstLetterLink(pathname) {
 export async function fetchApi(endpoint) {
   const response = await fetch(endpoint);
   const result = await response.json();
-  return result;
+  return Object.values(result)[0];
 }

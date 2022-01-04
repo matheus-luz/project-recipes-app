@@ -6,12 +6,15 @@ import { Provider } from 'react-redux';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import store from './redux/store';
+import MyContextProvider from './context/MyContextProvider';
 
 ReactDOM.render(
   <Provider store={ store }>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <MyContextProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </MyContextProvider>
   </Provider>,
   document.getElementById('root'),
 );

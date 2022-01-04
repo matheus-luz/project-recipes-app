@@ -32,7 +32,7 @@ function Header({ title, isSearchEnabled = false }) {
           </button>)}
       </header>
       {isInput
-      && <Search />}
+      && <Search title={ title } />}
     </div>
   );
 }

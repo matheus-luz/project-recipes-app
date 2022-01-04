@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import React, { useContext, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import MyContext from '../context/MyContext';
 import {
   fetchApi,
   getIngredientLink,
@@ -9,19 +11,36 @@ import {
   DRINK_FIRST_LETTER_URL,
 } from '../helpers/fetchApi';
 
-function Search() {
+function Search({ title }) {
   const [input, setInput] = useState('');
   const [filter, setFilter] = useState('');
   const { location: { pathname } } = useHistory();
+  const {
+    requestAPI, setRequestAPI, setIsLoading, setTypeOfSearch } = useContext(MyContext);
 
-  function handleSearch() {
+  const history = useHistory();
+
+  async function handleSearch() {
     if ((filter === FOOD_FIRST_LETTER_URL || filter === DRINK_FIRST_LETTER_URL)
       && input.length > 1) {
       global.alert('Sua busca deve conter somente 1 (um) caracter');
     } else {
-      fetchApi(`${filter}${input}`);
+      setIsLoading(true);
+      const response = await fetchApi(`${filter}${input}`);
+      await setRequestAPI(response);
     }
+    setIsLoading(false);
+    setTypeOfSearch(title.toLowerCase());
   }
+
+  useEffect(() => {
+    if (requestAPI === null) {
+      global.alert('Sinto muito, não encontramos nenhuma receita para esses filtros.');
+    } else if (requestAPI.length === 1) {
+      const id = Object.values(requestAPI[0])[0];
+      history.push(`/${title.toLowerCase()}/${id}`);
+    }
+  }, [requestAPI, history, title]);
 
   return (
     <div>
@@ -71,5 +90,9 @@ function Search() {
     </div>
   );
 }
+
+Search.propTypes = {
+  title: PropTypes.string,
+}.isRequired;
 
 export default Search;

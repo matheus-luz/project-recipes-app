@@ -54,7 +54,6 @@ function Login({ history, setEmailUser }) {
           data-testid="login-submit-btn"
         >
           Entrar
-
         </button>
       </form>
     </section>
