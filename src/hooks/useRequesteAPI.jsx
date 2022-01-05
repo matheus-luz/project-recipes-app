@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 
-function useRequesteAPI(API) {
+function useRequesteAPI(API, ARRAY_SIZE) {
   const SEARCH_LIST = API;
-  const ARRAY_SIZE = 12;
   const [data, setData] = useState([]);
 
   const getDataAPI = () => {
