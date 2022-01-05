@@ -13,7 +13,9 @@ function MyContextProvider({ children }) {
     isLoading,
     setIsLoading,
     typeOfSearch,
-    setTypeOfSearch };
+    setTypeOfSearch,
+  };
+
   return (
     <MyContext.Provider value={ data }>
       { children }
