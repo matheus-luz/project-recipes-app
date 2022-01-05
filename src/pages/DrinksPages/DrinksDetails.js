@@ -1,18 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { fetchDrinksRecipeByID } from '../../helpers/fetchApi';
+import CardsListRecomendation from '../../components/CardListRecomendation';
+import { fetchDrinksRecipeByID,
+  fetchRecomendation, FOOD_NAME_URL } from '../../helpers/fetchApi';
+import '../../styles/details.css';
 
 function DrinksDetails() {
   const [recipe, setRecipe] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [ingredients, setIngredients] = useState([]);
   const [measure, setMeasures] = useState([]);
+  const [foodsList, setFoodsList] = useState([]);
 
   const { id } = useParams();
-
   const fetchRecipe = useCallback(
     async () => {
       const { drinks } = await fetchDrinksRecipeByID(id);
+      const { meals } = await fetchRecomendation(FOOD_NAME_URL);
+      setFoodsList(meals);
       setRecipe(drinks[0]);
       console.log(drinks[0]);
       setIsLoading(false);
@@ -81,9 +86,17 @@ function DrinksDetails() {
       </ol>
       <p data-testid="instructions">{ strInstructions }</p>
 
-      <p data-testid={ `${0}-recomendation-card` }>recomendation-card</p>
+      <CardsListRecomendation
+        recomendations={ foodsList }
+      />
 
-      <button type="button" data-testid="start-recipe-btn">Iniciar Receita</button>
+      <button
+        className="start-recipe"
+        type="button"
+        data-testid="start-recipe-btn"
+      >
+        Iniciar Receita
+      </button>
     </div>
   );
 }

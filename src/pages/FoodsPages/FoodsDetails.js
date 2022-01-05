@@ -1,20 +1,26 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { fetchMealsRecipeByID } from '../../helpers/fetchApi';
+import CardsListRecomendation from '../../components/CardListRecomendation';
+import { DRINK_NAME_URL,
+  fetchMealsRecipeByID, fetchRecomendation } from '../../helpers/fetchApi';
+import '../../styles/details.css';
 
 function FoodsDetails() {
   const [recipe, setRecipe] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [ingredients, setIngredients] = useState([]);
   const [measure, setMeasures] = useState([]);
+  const [drinksList, setDrinksList] = useState([]);
 
   const { id } = useParams();
 
   const fetchRecipe = useCallback(
     async () => {
       const { meals } = await fetchMealsRecipeByID(id);
+      const { drinks } = await fetchRecomendation(DRINK_NAME_URL);
+      setDrinksList(drinks);
+      console.log(drinks);
       setRecipe(meals[0]);
-      console.log(meals[0]);
       setIsLoading(false);
     }, [id],
   );
@@ -85,9 +91,17 @@ function FoodsDetails() {
         <source src={ strYoutube } type="video/mp4" />
         <track src="" kind="captions" srcLang="en" label="English" />
       </video>
-      <p data-testid={ `${0}-recomendation-card` }>recomendation-card</p>
+      <CardsListRecomendation
+        recomendations={ drinksList }
+      />
 
-      <button type="button" data-testid="start-recipe-btn">Iniciar Receita</button>
+      <button
+        className="start-recipe"
+        type="button"
+        data-testid="start-recipe-btn"
+      >
+        Iniciar Receita
+      </button>
     </div>
   );
 }
