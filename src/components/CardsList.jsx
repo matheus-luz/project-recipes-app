@@ -11,10 +11,17 @@ function CardsList() {
       return (
         requestAPI.map((recipe, index) => {
           if (index > MAGIC_NUMBER) return;
-          const all = recipe.strMealThumb || recipe.strDrinkThumb;
           return (
-            <div key={ index } data-testid={ `${index}-recipe-card` }>
-              <img data-testid={ `${index}-card-img` } src={ all } alt="" />
+            <div
+              key={ `${index}-${recipe.idMeal}` }
+              data-testid={ `${index}-recipe-card` }
+            >
+              <img
+                data-testid={ `${index}-card-img` }
+                style={ { width: '100px' } }
+                src={ recipe.strMealThumb || recipe.strDrinkThumb }
+                alt={ recipe.strDrink || recipe.strMeal }
+              />
               <h3
                 data-testid={ `${index}-card-name` }
               >
