@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import CardsListRecomendation from '../../components/CardListRecomendation';
 import { fetchDrinksRecipeByID,
   fetchRecomendation, FOOD_NAME_URL } from '../../helpers/fetchApi';
@@ -12,6 +12,7 @@ function DrinksDetails() {
   const [measure, setMeasures] = useState([]);
   const [foodsList, setFoodsList] = useState([]);
 
+  const history = useHistory();
   const { id } = useParams();
   const fetchRecipe = useCallback(
     async () => {
@@ -91,6 +92,7 @@ function DrinksDetails() {
       />
 
       <button
+        onClick={ () => history.push(`/bebidas/${id}/in-progress`) }
         className="start-recipe"
         type="button"
         data-testid="start-recipe-btn"
