@@ -4,6 +4,11 @@ import CardsListRecomendation from '../../components/CardListRecomendation';
 import { DRINK_NAME_URL,
   fetchMealsRecipeByID, fetchRecomendation } from '../../helpers/fetchApi';
 import '../../styles/details.css';
+import shareIcon from '../../images/shareIcon.svg';
+import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
+import blackHeartIcon from '../../images/blackHeartIcon.svg';
+
+const copy = require('clipboard-copy');
 
 function FoodsDetails() {
   const [recipe, setRecipe] = useState([]);
@@ -11,6 +16,8 @@ function FoodsDetails() {
   const [ingredients, setIngredients] = useState([]);
   const [measure, setMeasures] = useState([]);
   const [drinksList, setDrinksList] = useState([]);
+  const [isCopied, setIsCopied] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const history = useHistory();
   const { id } = useParams();
@@ -34,7 +41,7 @@ function FoodsDetails() {
     () => {
       const ingredientsFiltered = Object.keys(recipe)
         .filter((item) => item.includes('strIngredient'))
-        .filter((item) => recipe[item] !== '')
+        .filter((item) => (recipe[item] !== '' || null))
         .map((item) => recipe[item]);
       setIngredients(ingredientsFiltered);
     }, [recipe],
@@ -48,7 +55,7 @@ function FoodsDetails() {
     () => {
       const measuresFiltered = Object.keys(recipe)
         .filter((item) => item.includes('strMeasure'))
-        .filter((item) => recipe[item] !== ' ')
+        .filter((item) => (recipe[item] !== ' ' || null))
         .map((item) => recipe[item]);
       setMeasures(measuresFiltered);
     }, [recipe],
@@ -57,6 +64,11 @@ function FoodsDetails() {
   useEffect(() => {
     getMeasures();
   }, [getMeasures]);
+
+  function handleShare() {
+    setIsCopied(true);
+    copy(window.location.href);
+  }
 
   const { strMealThumb, strMeal, strCategory, strInstructions, strYoutube } = recipe;
 
@@ -73,8 +85,25 @@ function FoodsDetails() {
         alt={ strMeal }
       />
       <h3 data-testid="recipe-title">{ strMeal }</h3>
-      <button data-testid="share-btn" type="button">Share</button>
-      <button data-testid="favorite-btn" type="button">Favorite</button>
+
+      <button
+        onClick={ handleShare }
+        data-testid="share-btn"
+        type="button"
+        src={ shareIcon }
+      >
+        <img src={ shareIcon } alt="share-icon" />
+      </button>
+      {isCopied && <span>Link copiado!</span>}
+
+      <button
+        onClick={ () => setIsFavorite(!isFavorite) }
+        data-testid="favorite-btn"
+        type="button"
+        src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
+      >
+        <img src={ isFavorite ? blackHeartIcon : whiteHeartIcon } alt="Heart-icon" />
+      </button>
       <p data-testid="recipe-category">{ strCategory }</p>
       <ol>
         {ingredients.map((item, index) => (

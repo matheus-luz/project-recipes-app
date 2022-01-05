@@ -4,6 +4,9 @@ import CardsListRecomendation from '../../components/CardListRecomendation';
 import { fetchDrinksRecipeByID,
   fetchRecomendation, FOOD_NAME_URL } from '../../helpers/fetchApi';
 import '../../styles/details.css';
+import shareIcon from '../../images/shareIcon.svg';
+
+const copy = require('clipboard-copy');
 
 function DrinksDetails() {
   const [recipe, setRecipe] = useState([]);
@@ -11,6 +14,7 @@ function DrinksDetails() {
   const [ingredients, setIngredients] = useState([]);
   const [measure, setMeasures] = useState([]);
   const [foodsList, setFoodsList] = useState([]);
+  const [isCopied, setIsCopied] = useState(false);
 
   const history = useHistory();
   const { id } = useParams();
@@ -57,6 +61,11 @@ function DrinksDetails() {
     getMeasures();
   }, [getMeasures]);
 
+  function handleShare() {
+    setIsCopied(true);
+    copy(window.location.href);
+  }
+
   const { strDrinkThumb, strDrink, strAlcoholic, strInstructions } = recipe;
 
   if (isLoading) {
@@ -72,7 +81,17 @@ function DrinksDetails() {
         alt={ strDrink }
       />
       <h3 data-testid="recipe-title">{ strDrink }</h3>
-      <button data-testid="share-btn" type="button">Share</button>
+
+      <button
+        onClick={ handleShare }
+        data-testid="share-btn"
+        type="button"
+        src={ shareIcon }
+      >
+        <img src={ shareIcon } alt="share-icon" />
+      </button>
+      {isCopied && <span>Link copiado!</span>}
+
       <button data-testid="favorite-btn" type="button">Favorite</button>
       <p data-testid="recipe-category">{ strAlcoholic }</p>
       <ol>
