@@ -30,3 +30,23 @@ export async function fetchApi(endpoint) {
   const result = await response.json();
   return Object.values(result)[0];
 }
+
+export async function fetchMealsRecipeByID(endpoint) {
+  const URL = 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=';
+  const response = await fetch(`${URL}${endpoint}`);
+  const result = await response.json();
+  return result;
+}
+
+export async function fetchDrinksRecipeByID(endpoint) {
+  const URL = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=';
+  const response = await fetch(`${URL}${endpoint}`);
+  const result = await response.json();
+  return result;
+}
+
+export async function fetchRecomendation(url) {
+  const response = await fetch(url);
+  const result = await response.json();
+  return result;
+}
