@@ -4,6 +4,7 @@ import MyContext from './MyContext';
 
 function MyContextProvider({ children }) {
   const [requestAPI, setRequestAPI] = useState([]);
+  const [requestIngredient, setRequestIngredient] = useState(false);
   const [typeOfSearch, setTypeOfSearch] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -14,6 +15,8 @@ function MyContextProvider({ children }) {
     setIsLoading,
     typeOfSearch,
     setTypeOfSearch,
+    setRequestIngredient,
+    requestIngredient,
   };
 
   return (
