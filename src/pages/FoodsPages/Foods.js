@@ -4,10 +4,11 @@ import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 
 function Foods() {
+  const ola = 'ola';
   return (
     <div>
       <Header title="Comidas" isSearchEnabled />
-      <CardsList />
+      <CardsList ola={ ola } />
       <Footer />
     </div>
   );

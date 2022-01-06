@@ -6,7 +6,6 @@ const MAGIC_NUMBER = 11;
 function CardsList() {
   const { isLoading, requestAPI } = useContext(MyContext);
   function cardItem() {
-    console.log(requestAPI);
     if (requestAPI === null) return;
     if (requestAPI.length > 1) {
       return (
