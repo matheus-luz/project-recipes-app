@@ -15,7 +15,8 @@ function Drinks() {
 
   const [currentButton, setCurrentButton] = useState('');
 
-  const { setRequestAPI } = useContext(MyContext);
+  const { setRequestAPI, isFilterOn,
+    setIsFilterOn } = useContext(MyContext);
   const [categoryFood] = useRequesteAPI(CATEGORY_DRINK, CATEGORY_SIZE);
 
   const nameCategory = categoryFood.map((category) => Object.values(category)[0]);
@@ -45,8 +46,11 @@ function Drinks() {
   const handleAllCategory = () => setRequestAPI(data);
 
   useEffect(() => {
-    setRequestAPI(data);
-  }, [setRequestAPI, data]);
+    if (!isFilterOn) {
+      setIsFilterOn(false);
+      setRequestAPI(data);
+    }
+  }, [setRequestAPI, data, setIsFilterOn, isFilterOn]);
 
   return (
     <div>
