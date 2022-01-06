@@ -28,7 +28,6 @@ function FoodByIngredient() {
     const ingredientName = (target.parentNode.lastChild.textContent);
     const link = FOOD_INGREDIENT + ingredientName;
     const DATA_API = await getDataAPI(link);
-    console.log(target.parentNode.parentNode);
     setRequestAPI(DATA_API);
   };
 
