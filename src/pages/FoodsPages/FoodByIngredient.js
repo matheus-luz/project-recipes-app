@@ -8,7 +8,7 @@ import { INGREDIENT_FOOD, FOOD_INGREDIENT } from '../../helpers/fetchApi';
 import useRequesteAPI from '../../hooks/useRequesteAPI';
 
 function FoodByIngredient() {
-  const { setRequestAPI, setRequestIngredient } = useContext(MyContext);
+  const { setRequestAPI, setIsFilterOn } = useContext(MyContext);
   const INGREDIENT_SIZE = 12;
   const IMG_LINK = 'https://www.themealdb.com/images/ingredients/';
   const [ingredient] = useRequesteAPI(INGREDIENT_FOOD, INGREDIENT_SIZE);
@@ -24,7 +24,7 @@ function FoodByIngredient() {
   };
 
   const handleIndgredientClick = async ({ target }) => {
-    setRequestIngredient(true);
+    setIsFilterOn(true);
     const ingredientName = (target.parentNode.lastChild.textContent);
     const link = FOOD_INGREDIENT + ingredientName;
     const DATA_API = await getDataAPI(link);
@@ -44,12 +44,12 @@ function FoodByIngredient() {
           >
             <div data-testid={ `${index}-ingredient-card` }>
 
-              <h2 data-testid={ `${index}-card-name` }>{meals.strIngredient}</h2>
               <img
                 data-testid={ `${index}-card-img` }
                 src={ `${IMG_LINK}${meals.strIngredient}-Small.png` }
                 alt={ meals.strIngredient }
               />
+              <h2 data-testid={ `${index}-card-name` }>{meals.strIngredient}</h2>
             </div>
           </Link>
         ))}

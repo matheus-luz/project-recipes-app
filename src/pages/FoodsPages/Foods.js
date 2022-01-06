@@ -16,8 +16,8 @@ function Foods() {
 
   const [currentButton, setCurrentButton] = useState('');
 
-  const { setRequestAPI, setRequestIngredient,
-    requestIngredient } = useContext(MyContext);
+  const { setRequestAPI, setIsFilterOn,
+    isFilterOn } = useContext(MyContext);
 
   const [data] = useRequesteAPI(FOOD_NAME_URL, FOODS_SIZE);
   const [categoryFood] = useRequesteAPI(CATEGORY_FOOD, CATEGORY_SIZE);
@@ -49,11 +49,11 @@ function Foods() {
   const handleAllCategory = () => setRequestAPI(data);
 
   useEffect(() => {
-    if (!requestIngredient) {
-      setRequestIngredient(false);
+    if (!isFilterOn) {
+      setIsFilterOn(false);
       setRequestAPI(data);
     }
-  }, [setRequestAPI, data, setRequestIngredient, requestIngredient]);
+  }, [setRequestAPI, data, setIsFilterOn, isFilterOn]);
 
   return (
     <div>

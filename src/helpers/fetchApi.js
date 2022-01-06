@@ -15,6 +15,9 @@ export const FILTER_CATEGORY_DRINK = 'www.thecocktaildb.com/api/json/v1/1/filter
 export const INGREDIENT_DRINK = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?i=list';
 export const INGREDIENT_FOOD = 'https://www.themealdb.com/api/json/v1/1/list.php?i=list';
 
+export const FOODS_AREA = 'https://www.themealdb.com/api/json/v1/1/list.php?a=list';
+export const FOODS_BY_AREA = 'https://www.themealdb.com/api/json/v1/1/filter.php?a=';
+
 export function getIngredientLink(pathname) {
   return pathname.includes('comidas') ? FOOD_INGREDIENT : DRINK_INGREDIENT;
 }

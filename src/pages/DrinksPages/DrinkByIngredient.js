@@ -7,7 +7,7 @@ import { INGREDIENT_DRINK, DRINK_INGREDIENT } from '../../helpers/fetchApi';
 import useRequesteAPI from '../../hooks/useRequesteAPI';
 
 function DrinkByIngredient() {
-  const { setRequestAPI, setRequestIngredient } = useContext(MyContext);
+  const { setRequestAPI, setIsFilterOn } = useContext(MyContext);
   const INGREDIENT_SIZE = 12;
   const IMG_LINK = 'https://www.thecocktaildb.com/images/ingredients/';
   const [ingredient] = useRequesteAPI(INGREDIENT_DRINK, INGREDIENT_SIZE);
@@ -23,7 +23,7 @@ function DrinkByIngredient() {
   };
 
   const handleIndgredientClick = async ({ target }) => {
-    setRequestIngredient(true);
+    setIsFilterOn(true);
     const ingredientName = (target.parentNode.lastChild.textContent);
     const link = DRINK_INGREDIENT + ingredientName;
     const DATA_API = await getDataAPI(link);
