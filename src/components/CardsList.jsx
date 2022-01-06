@@ -8,14 +8,13 @@ function CardsList() {
   const { isLoading, requestAPI } = useContext(MyContext);
 
   const location = useLocation();
-  console.log(location.pathname);
 
   function cardItem() {
     if (requestAPI === null) return;
     if (requestAPI) {
       return (
         requestAPI.map((recipe, index) => {
-          if (index > MAGIC_NUMBER) return;
+          if (index > MAGIC_NUMBER) return null;
           return (
             <Link
               key={ `${index}-${recipe.idMeal}` }
