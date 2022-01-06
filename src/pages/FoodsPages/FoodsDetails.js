@@ -7,6 +7,8 @@ import '../../styles/details.css';
 import shareIcon from '../../images/shareIcon.svg';
 import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
+import saveMeal from '../../helpers/saveMealLocalStorage';
+import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
 
 const copy = require('clipboard-copy');
 
@@ -18,6 +20,7 @@ function FoodsDetails() {
   const [drinksList, setDrinksList] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isInProgress, setIsInProgress] = useState(false);
 
   const history = useHistory();
   const { id } = useParams();
@@ -27,7 +30,7 @@ function FoodsDetails() {
       const { meals } = await fetchMealsRecipeByID(id);
       const { drinks } = await fetchRecomendation(DRINK_NAME_URL);
       setDrinksList(drinks);
-      console.log(drinks);
+      console.log(meals[0]);
       setRecipe(meals[0]);
       setIsLoading(false);
     }, [id],
@@ -36,20 +39,11 @@ function FoodsDetails() {
   useEffect(() => {
     fetchRecipe();
   }, [fetchRecipe]);
-
   const getIngredients = useCallback(
     () => {
-      const ingredientsFiltered = Object.keys(recipe)
-        .filter((item) => item.includes('strIngredient'))
-        .filter((item) => (recipe[item] !== '' || null))
-        .map((item) => recipe[item]);
-      setIngredients(ingredientsFiltered);
+      setIngredients(getIngredientsFiltered(recipe));
     }, [recipe],
   );
-
-  useEffect(() => {
-    getIngredients();
-  }, [getIngredients]);
 
   const getMeasures = useCallback(
     () => {
@@ -62,12 +56,38 @@ function FoodsDetails() {
   );
 
   useEffect(() => {
+    getIngredients();
     getMeasures();
-  }, [getMeasures]);
+  }, [getIngredients, getMeasures]);
+
+  useEffect(() => {
+    const recipes = JSON.parse(localStorage.getItem('favoriteRecipes') || '[]');
+    const checkRecipe = recipes.some((item) => item.id === id);
+    if (checkRecipe) {
+      setIsFavorite(true);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const { meals } = JSON.parse(localStorage.getItem('inProgressRecipes') || '[]');
+
+    if (meals) {
+      const ids = Object.keys(meals);
+      const checkRecipe = ids.some((item) => item === id);
+      if (checkRecipe) {
+        setIsInProgress(true);
+      }
+    }
+  }, [id]);
 
   function handleShare() {
     setIsCopied(true);
     copy(window.location.href);
+  }
+
+  function handleFavorite() {
+    setIsFavorite(!isFavorite);
+    saveMeal(recipe, isFavorite, id);
   }
 
   const { strMealThumb, strMeal, strCategory, strInstructions, strYoutube } = recipe;
@@ -97,7 +117,7 @@ function FoodsDetails() {
       {isCopied && <span>Link copiado!</span>}
 
       <button
-        onClick={ () => setIsFavorite(!isFavorite) }
+        onClick={ handleFavorite }
         data-testid="favorite-btn"
         type="button"
         src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
@@ -117,10 +137,17 @@ function FoodsDetails() {
       </ol>
       <p data-testid="instructions">{ strInstructions }</p>
 
-      <video data-testid="video" controls>
-        <source src={ strYoutube } type="video/mp4" />
-        <track src="" kind="captions" srcLang="en" label="English" />
-      </video>
+      <iframe
+        data-testid="video"
+        width="560"
+        height="315"
+        title={ strMeal }
+        frameBorder="0"
+        src={ `https://www.youtube-nocookie.com/embed/${strYoutube.split('watch?v=')[1]}` }
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+
       <CardsListRecomendation
         recomendations={ drinksList }
       />
@@ -131,7 +158,7 @@ function FoodsDetails() {
         type="button"
         data-testid="start-recipe-btn"
       >
-        Iniciar Receita
+        {isInProgress ? 'Continuar Receita' : 'Iniciar Receita'}
       </button>
     </div>
   );
