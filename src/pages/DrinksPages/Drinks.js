@@ -15,7 +15,8 @@ function Drinks() {
 
   const [currentButton, setCurrentButton] = useState('');
 
-  const { setRequestAPI } = useContext(MyContext);
+  const { setRequestAPI, requestIngredient,
+    setRequestIngredient } = useContext(MyContext);
   const [categoryFood] = useRequesteAPI(CATEGORY_DRINK, CATEGORY_SIZE);
 
   const nameCategory = categoryFood.map((category) => Object.values(category)[0]);
@@ -45,8 +46,11 @@ function Drinks() {
   const handleAllCategory = () => setRequestAPI(data);
 
   useEffect(() => {
-    setRequestAPI(data);
-  }, [setRequestAPI, data]);
+    if (!requestIngredient) {
+      setRequestIngredient(false);
+      setRequestAPI(data);
+    }
+  }, [setRequestAPI, data, setRequestIngredient, requestIngredient]);
 
   return (
     <div>
