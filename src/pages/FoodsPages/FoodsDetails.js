@@ -27,7 +27,7 @@ function FoodsDetails() {
       const { meals } = await fetchMealsRecipeByID(id);
       const { drinks } = await fetchRecomendation(DRINK_NAME_URL);
       setDrinksList(drinks);
-      console.log(drinks);
+      console.log(meals[0]);
       setRecipe(meals[0]);
       setIsLoading(false);
     }, [id],
@@ -117,10 +117,17 @@ function FoodsDetails() {
       </ol>
       <p data-testid="instructions">{ strInstructions }</p>
 
-      <video data-testid="video" controls>
-        <source src={ strYoutube } type="video/mp4" />
-        <track src="" kind="captions" srcLang="en" label="English" />
-      </video>
+      <iframe
+        data-testid="video"
+        width="560"
+        height="315"
+        title={ strMeal }
+        frameBorder="0"
+        src={ `https://www.youtube-nocookie.com/embed/${strYoutube.split('watch?v=')[1]}` }
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+
       <CardsListRecomendation
         recomendations={ drinksList }
       />
