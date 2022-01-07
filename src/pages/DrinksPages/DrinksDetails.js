@@ -5,8 +5,24 @@ import { fetchDrinksRecipeByID,
   fetchRecomendation, FOOD_NAME_URL } from '../../helpers/fetchApi';
 import '../../styles/details.css';
 import shareIcon from '../../images/shareIcon.svg';
+import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
+import blackHeartIcon from '../../images/blackHeartIcon.svg';
+import saveDrink from '../../helpers/saveDrinkLocalStorage';
+import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
 
 const copy = require('clipboard-copy');
+
+function getInfo(info) {
+  const recipes = JSON.parse(localStorage.getItem(info) || '[]');
+  return recipes;
+}
+
+function getMeasuresFiltered(recipe) {
+  return Object.keys(recipe)
+    .filter((item) => item.includes('strMeasure'))
+    .filter((item) => recipe[item] !== null)
+    .map((item) => recipe[item]);
+}
 
 function DrinksDetails() {
   const [recipe, setRecipe] = useState([]);
@@ -15,9 +31,12 @@ function DrinksDetails() {
   const [measure, setMeasures] = useState([]);
   const [foodsList, setFoodsList] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isInProgress, setIsInProgress] = useState(false);
 
   const history = useHistory();
   const { id } = useParams();
+
   const fetchRecipe = useCallback(
     async () => {
       const { drinks } = await fetchDrinksRecipeByID(id);
@@ -30,40 +49,41 @@ function DrinksDetails() {
   );
 
   useEffect(() => {
+    setIngredients(getIngredientsFiltered(recipe));
+  }, [recipe]);
+
+  useEffect(() => {
+    setMeasures(getMeasuresFiltered(recipe));
     fetchRecipe();
-  }, [fetchRecipe]);
-
-  const getIngredients = useCallback(
-    () => {
-      const ingredientsFiltered = Object.keys(recipe)
-        .filter((item) => item.includes('strIngredient'))
-        .filter((item) => recipe[item] !== null)
-        .map((item) => recipe[item]);
-      setIngredients(ingredientsFiltered);
-    }, [recipe],
-  );
+  }, [recipe, fetchRecipe]);
 
   useEffect(() => {
-    getIngredients();
-  }, [getIngredients]);
-
-  const getMeasures = useCallback(
-    () => {
-      const measuresFiltered = Object.keys(recipe)
-        .filter((item) => item.includes('strMeasure'))
-        .filter((item) => recipe[item] !== null)
-        .map((item) => recipe[item]);
-      setMeasures(measuresFiltered);
-    }, [recipe],
-  );
+    const recipes = getInfo('favoriteRecipes');
+    const checkRecipe = recipes.some((item) => item.id === id);
+    if (checkRecipe) {
+      setIsFavorite(true);
+    }
+  }, [id]);
 
   useEffect(() => {
-    getMeasures();
-  }, [getMeasures]);
+    const { cocktails } = getInfo('inProgressRecipes');
+    if (cocktails) {
+      const ids = Object.keys(cocktails);
+      const checkRecipe = ids.some((item) => item === id);
+      if (checkRecipe) {
+        setIsInProgress(true);
+      }
+    }
+  }, [id]);
 
   function handleShare() {
     setIsCopied(true);
     copy(window.location.href);
+  }
+
+  function handleFavorite() {
+    setIsFavorite(!isFavorite);
+    saveDrink(isFavorite, recipe, id);
   }
 
   const { strDrinkThumb, strDrink, strAlcoholic, strInstructions } = recipe;
@@ -92,7 +112,15 @@ function DrinksDetails() {
       </button>
       {isCopied && <span>Link copiado!</span>}
 
-      <button data-testid="favorite-btn" type="button">Favorite</button>
+      <button
+        onClick={ handleFavorite }
+        data-testid="favorite-btn"
+        type="button"
+        src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
+      >
+        <img src={ isFavorite ? blackHeartIcon : whiteHeartIcon } alt="Heart-icon" />
+      </button>
+
       <p data-testid="recipe-category">{ strAlcoholic }</p>
       <ol>
         {ingredients.map((item, index) => (
@@ -116,7 +144,7 @@ function DrinksDetails() {
         type="button"
         data-testid="start-recipe-btn"
       >
-        Iniciar Receita
+        {isInProgress ? 'Continuar Receita' : 'Iniciar Receita'}
       </button>
     </div>
   );

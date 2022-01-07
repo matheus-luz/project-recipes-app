@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import MyContext from '../context/MyContext';
 
 const MAGIC_NUMBER = 11;
@@ -7,19 +7,19 @@ const MAGIC_NUMBER = 11;
 function CardsList() {
   const { isLoading, requestAPI } = useContext(MyContext);
 
-  const location = useLocation();
-  console.log(location.pathname);
+  const verificationValue = (recipe) => (recipe ? '/comidas/' : '/bebidas/');
 
   function cardItem() {
     if (requestAPI === null) return;
     if (requestAPI) {
       return (
         requestAPI.map((recipe, index) => {
-          if (index > MAGIC_NUMBER) return;
+          const value = verificationValue(recipe.idMeal);
+          if (index > MAGIC_NUMBER) return null;
           return (
             <Link
               key={ `${index}-${recipe.idMeal}` }
-              to={ `${location.pathname}/${recipe.idMeal || recipe.idDrink}` }
+              to={ `${value}${recipe.idMeal || recipe.idDrink}` }
             >
               <div
                 data-testid={ `${index}-recipe-card` }

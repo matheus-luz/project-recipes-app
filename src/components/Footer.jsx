@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
+
 import { useHistory } from 'react-router-dom';
+import MyContext from '../context/MyContext';
 import drinkIcon from '../images/drinkIcon.svg';
 import exploreIcon from '../images/exploreIcon.svg';
 import mealIcon from '../images/mealIcon.svg';
 import '../styles/footer.css';
 
 function Footer() {
+  const { setIsFilterOn } = useContext(MyContext);
   const history = useHistory();
   return (
     <footer data-testid="footer">
@@ -13,7 +16,10 @@ function Footer() {
         data-testid="drinks-bottom-btn"
         type="button"
         src={ drinkIcon }
-        onClick={ () => history.push('/bebidas') }
+        onClick={ () => {
+          setIsFilterOn(false);
+          history.push('/bebidas');
+        } }
       >
         <img src={ drinkIcon } alt="drink-icon" />
       </button>
@@ -29,7 +35,10 @@ function Footer() {
         data-testid="food-bottom-btn"
         type="button"
         src={ mealIcon }
-        onClick={ () => history.push('/comidas') }
+        onClick={ () => {
+          setIsFilterOn(false);
+          history.push('/comidas');
+        } }
       >
         <img src={ mealIcon } alt="meal-icon" />
       </button>
