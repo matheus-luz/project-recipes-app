@@ -7,9 +7,10 @@ function Profile() {
   const [emailFromLocalStorage, setEmailFromLocalStorage] = useState();
 
   useEffect(() => {
-    const { email } = JSON.parse(localStorage.getItem('user'));
-    console.log(email);
-    setEmailFromLocalStorage(email);
+    if (localStorage.getItem('user')) {
+      const { email } = JSON.parse(localStorage.getItem('user'));
+      setEmailFromLocalStorage(email);
+    }
   }, []);
 
   function handleLogOut() {
