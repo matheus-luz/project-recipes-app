@@ -61,11 +61,11 @@ function DrinksInProgress() {
     );
   }
 
-  function handleLocalStorage() {
-    const recipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
-    // const ingredientsDone = recipes.cocktails[id];
-    return recipes;
-  }
+  // function handleLocalStorage() {
+  //   const recipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
+  //   // const ingredientsDone = recipes.cocktails[id];
+  //   return recipes;
+  // }
 
   function check({ target }) {
     const isChecked = target.parentNode.classList;
@@ -73,12 +73,11 @@ function DrinksInProgress() {
       isChecked.remove('checked');
     } else {
       isChecked.add('checked');
-      const newIngredient = {
-        ...handleLocalStorage(),
-      };
-      newIngredient.cocktails[id].toggle(target.innerText);
-      localStorage.setItem('inProgressRecipes', JSON.stringify(newIngredient));
+      // const newIngredient = {
+      //   ...handleLocalStorage(),
     }
+    // newIngredient.cocktails[id].toggle(target.innerText);
+    // localStorage.setItem('inProgressRecipes', JSON.stringify(newIngredient));
   }
   return (
     <div>
