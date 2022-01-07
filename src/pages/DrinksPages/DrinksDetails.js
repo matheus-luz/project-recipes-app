@@ -144,7 +144,9 @@ function DrinksDetails() {
       />
 
       <button
-        onClick={ () => history.push(`/bebidas/${id}/in-progress`) }
+        onClick={ () => {
+          history.push(`/bebidas/${id}/in-progress`);
+        } }
         className="start-recipe"
         type="button"
         data-testid="start-recipe-btn"
