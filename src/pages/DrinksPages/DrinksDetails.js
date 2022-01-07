@@ -43,19 +43,24 @@ function DrinksDetails() {
       const { meals } = await fetchRecomendation(FOOD_NAME_URL);
       setFoodsList(meals);
       setRecipe(drinks[0]);
-      console.log(drinks[0]);
       setIsLoading(false);
     }, [id],
   );
 
-  useEffect(() => {
-    setIngredients(getIngredientsFiltered(recipe));
-  }, [recipe]);
+  const getIngredients = useCallback(
+    () => {
+      setIngredients(getIngredientsFiltered(recipe));
+    }, [recipe],
+  );
 
   useEffect(() => {
     setMeasures(getMeasuresFiltered(recipe));
+    getIngredients();
+  }, [recipe, getIngredients]);
+
+  useEffect(() => {
     fetchRecipe();
-  }, [recipe, fetchRecipe]);
+  }, [fetchRecipe]);
 
   useEffect(() => {
     const recipes = getInfo('favoriteRecipes');
