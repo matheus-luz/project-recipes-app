@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
 import { fetchDrinksRecipeByID } from '../../helpers/fetchApi';
 import '../../styles/RecipesInProgress.css';
@@ -10,6 +11,7 @@ function DrinksInProgress() {
   const [ingredients, setIngredients] = useState([]);
   const [measure, setMeasures] = useState([]);
   const { id } = useParams();
+  const history = useHistory();
   const fetchRecipe = useCallback(
     async () => {
       const { drinks } = await fetchDrinksRecipeByID(id);
@@ -111,6 +113,7 @@ function DrinksInProgress() {
         className="finish-recipe"
         type="button"
         data-testid="finish-recipe-btn"
+        onClick={ () => history.push('/receitas-feitas') }
       >
         Finalizar Receita
       </button>
