@@ -96,6 +96,7 @@ function FoodsDetails() {
       <p>Loading...</p>
     );
   }
+
   return (
     <div>
       <img

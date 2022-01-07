@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
 import { fetchDrinksRecipeByID } from '../../helpers/fetchApi';
+import '../../styles/RecipesInProgress.css';
 
 function DrinksInProgress() {
   const [recipe, setRecipe] = useState([]);
@@ -45,8 +46,7 @@ function DrinksInProgress() {
 
   useEffect(() => {
     setMeasures(getMeasuresFiltered(recipe));
-    fetchRecipe();
-  }, [recipe, fetchRecipe]);
+  }, [recipe]);
 
   useEffect(() => {
     getIngredients();
@@ -59,6 +59,14 @@ function DrinksInProgress() {
     );
   }
 
+  function check({ target }) {
+    const isChecked = target.parentNode.classList;
+    if (isChecked.contains('checked')) {
+      isChecked.remove('checked');
+    } else {
+      isChecked.add('checked');
+    }
+  }
   return (
     <div>
       <h3 data-testid="recipe-title">{recipe.strDrink}</h3>
@@ -82,7 +90,7 @@ function DrinksInProgress() {
             data-testid={ `data-testid=${index}-ingredient-step` }
             key={ index }
           >
-            <input type="checkbox" />
+            <input type="checkbox" onChange={ check } />
             {`${item} - ${measure[index]}`}
           </li>
         ))}

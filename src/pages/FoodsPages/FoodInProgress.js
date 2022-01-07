@@ -46,6 +46,15 @@ function FoodInProgress() {
     );
   }
 
+  function check({ target }) {
+    const isChecked = target.parentNode.classList;
+    if (isChecked.contains('checked')) {
+      isChecked.remove('checked');
+    } else {
+      isChecked.add('checked');
+    }
+  }
+
   return (
     <div>
       <h3 data-testid="recipe-title">{recipe.strMeal}</h3>
@@ -69,7 +78,7 @@ function FoodInProgress() {
             data-testid={ `data-testid=${index}-ingredient-step` }
             key={ index }
           >
-            <input type="checkbox" />
+            <input type="checkbox" onChange={ check } />
             {`${item} - ${measure[index]}`}
           </li>
         ))}
