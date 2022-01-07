@@ -40,6 +40,12 @@ function FoodInProgress() {
     getMeasures();
   }, [getIngredients, getMeasures]);
 
+  if (isLoading) {
+    return (
+      <p>Loading...</p>
+    );
+  }
+
   return (
     <div>
       <h3 data-testid="recipe-title">{recipe.strMeal}</h3>
@@ -63,6 +69,7 @@ function FoodInProgress() {
             data-testid={ `data-testid=${index}-ingredient-step` }
             key={ index }
           >
+            <input type="checkbox" />
             {`${item} - ${measure[index]}`}
           </li>
         ))}

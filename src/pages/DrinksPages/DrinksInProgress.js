@@ -20,11 +20,11 @@ function DrinksInProgress() {
     fetchRecipe();
   }, [fetchRecipe]);
 
-  function getMeasuresFiltered(recipe) {
-    return Object.keys(recipe)
+  function getMeasuresFiltered(ingredient) {
+    return Object.keys(ingredient)
       .filter((item) => item.includes('strMeasure'))
-      .filter((item) => recipe[item] !== null)
-      .map((item) => recipe[item]);
+      .filter((item) => ingredient[item] !== null)
+      .map((item) => ingredient[item]);
   }
 
   const getIngredients = useCallback(
@@ -53,6 +53,12 @@ function DrinksInProgress() {
     getMeasures();
   }, [getIngredients, getMeasures]);
 
+  if (isLoading) {
+    return (
+      <p>Loading...</p>
+    );
+  }
+
   return (
     <div>
       <h3 data-testid="recipe-title">{recipe.strDrink}</h3>
@@ -76,6 +82,7 @@ function DrinksInProgress() {
             data-testid={ `data-testid=${index}-ingredient-step` }
             key={ index }
           >
+            <input type="checkbox" />
             {`${item} - ${measure[index]}`}
           </li>
         ))}
