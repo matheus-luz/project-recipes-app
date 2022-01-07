@@ -43,19 +43,24 @@ function DrinksDetails() {
       const { meals } = await fetchRecomendation(FOOD_NAME_URL);
       setFoodsList(meals);
       setRecipe(drinks[0]);
-      console.log(drinks[0]);
       setIsLoading(false);
     }, [id],
   );
 
-  useEffect(() => {
-    setIngredients(getIngredientsFiltered(recipe));
-  }, [recipe]);
+  const getIngredients = useCallback(
+    () => {
+      setIngredients(getIngredientsFiltered(recipe));
+    }, [recipe],
+  );
 
   useEffect(() => {
     setMeasures(getMeasuresFiltered(recipe));
+    getIngredients();
+  }, [recipe, getIngredients]);
+
+  useEffect(() => {
     fetchRecipe();
-  }, [recipe, fetchRecipe]);
+  }, [fetchRecipe]);
 
   useEffect(() => {
     const recipes = getInfo('favoriteRecipes');
@@ -139,7 +144,9 @@ function DrinksDetails() {
       />
 
       <button
-        onClick={ () => history.push(`/bebidas/${id}/in-progress`) }
+        onClick={ () => {
+          history.push(`/bebidas/${id}/in-progress`);
+        } }
         className="start-recipe"
         type="button"
         data-testid="start-recipe-btn"
