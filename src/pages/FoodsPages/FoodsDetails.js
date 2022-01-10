@@ -30,8 +30,8 @@ function FoodsDetails() {
       const { meals } = await fetchMealsRecipeByID(id);
       const { drinks } = await fetchRecomendation(DRINK_NAME_URL);
       setDrinksList(drinks);
-      console.log(meals[0]);
       setRecipe(meals[0]);
+
       setIsLoading(false);
     }, [id],
   );
@@ -50,7 +50,7 @@ function FoodsDetails() {
       console.log(recipe);
       const measuresFiltered = Object.keys(recipe)
         .filter((item) => item.includes('strMeasure'))
-        .filter((item) => (recipe[item] !== ' ' || null))
+        .filter((item) => (recipe[item] !== ' ' && recipe[item] !== null))
         .map((item) => recipe[item]);
       setMeasures(measuresFiltered);
     }, [recipe],
@@ -75,7 +75,6 @@ function FoodsDetails() {
 
   useEffect(() => {
     const { meals } = JSON.parse(localStorage.getItem('inProgressRecipes') || '[]');
-
     if (meals) {
       const ids = Object.keys(meals);
       const checkRecipe = ids.some((item) => item === id);
@@ -102,6 +101,7 @@ function FoodsDetails() {
       <p>Loading...</p>
     );
   }
+
   return (
     <div>
       <img
