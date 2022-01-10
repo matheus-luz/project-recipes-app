@@ -68,6 +68,7 @@ function DrinksDetails() {
   useEffect(() => {
     const { cocktails } = getInfo('inProgressRecipes');
     if (cocktails) {
+      console.log(cocktails);
       const ids = Object.keys(cocktails);
       const checkRecipe = ids.some((item) => item === id);
       if (checkRecipe) {

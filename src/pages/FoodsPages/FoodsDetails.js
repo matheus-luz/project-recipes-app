@@ -47,6 +47,7 @@ function FoodsDetails() {
 
   const getMeasures = useCallback(
     () => {
+      console.log(recipe);
       const measuresFiltered = Object.keys(recipe)
         .filter((item) => item.includes('strMeasure'))
         .filter((item) => (recipe[item] !== ' ' || null))
@@ -58,6 +59,10 @@ function FoodsDetails() {
   useEffect(() => {
     getIngredients();
     getMeasures();
+
+    // return () => {
+    //   console.log('a');
+    // };
   }, [getIngredients, getMeasures]);
 
   useEffect(() => {
