@@ -1,21 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import store from './redux/store';
 import MyContextProvider from './context/MyContextProvider';
 
 ReactDOM.render(
-  <Provider store={ store }>
-    <MyContextProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </MyContextProvider>
-  </Provider>,
+  <MyContextProvider>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </MyContextProvider>,
   document.getElementById('root'),
 );
 

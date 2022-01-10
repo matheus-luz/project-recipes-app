@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import RedirectButton from '../components/RedirectButton';
+import MyContext from '../context/MyContext';
 
 function Profile() {
   const [emailFromLocalStorage, setEmailFromLocalStorage] = useState();
+
+  const { setEmail } = useContext(MyContext);
 
   useEffect(() => {
     if (localStorage.getItem('user')) {
@@ -14,6 +17,7 @@ function Profile() {
   }, []);
 
   function handleLogOut() {
+    setEmail('');
     localStorage.removeItem('user');
     localStorage.removeItem('mealsToken');
     localStorage.removeItem('cocktailsToken');

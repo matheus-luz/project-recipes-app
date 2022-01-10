@@ -1,14 +1,15 @@
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-
-import { loginEmail } from '../redux/actions';
+import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import MyContext from '../context/MyContext';
 
 const SIX_NUMBER = 6;
 
-function Login({ history, setEmailUser }) {
-  const [email, setEmail] = useState('');
+function Login() {
   const [password, setPassword] = useState('');
+
+  const { email, setEmail } = useContext(MyContext);
+  const history = useHistory();
+
   function validarEmail(emailValue) {
     const valid = /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
     return valid.test(emailValue);
@@ -23,7 +24,7 @@ function Login({ history, setEmailUser }) {
     localStorage.setItem('mealsToken', 1);
     localStorage.setItem('cocktailsToken', 1);
     localStorage.setItem('user', JSON.stringify({ email }));
-    setEmailUser(email);
+    setEmail(email);
     history.push('/comidas');
   }
 
@@ -60,12 +61,4 @@ function Login({ history, setEmailUser }) {
   );
 }
 
-Login.propTypes = {
-  setEmailUser: PropTypes.string,
-}.isRequired;
-
-const mapDispatchToProps = (dispatch) => ({
-  setEmailUser: (email) => dispatch(loginEmail(email)),
-});
-
-export default connect(null, mapDispatchToProps)(Login);
+export default Login;

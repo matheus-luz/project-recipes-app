@@ -4,11 +4,28 @@ import { useHistory } from 'react-router-dom';
 import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
 import { fetchMealsRecipeByID } from '../../helpers/fetchApi';
 
+const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+
+function startRecipe(id, setIngredientsCheck) {
+  if (!inProgress) {
+    localStorage.setItem('inProgressRecipes', JSON.stringify({
+      meals: { [id]: [] },
+      cocktails: {},
+    }));
+  } else if (inProgress.meals[id]) {
+    setIngredientsCheck(inProgress.meals[id]);
+  } else {
+    inProgress.meals[id] = [];
+    localStorage.setItem('inProgressRecipes', JSON.stringify(inProgress));
+  }
+}
+
 function FoodInProgress() {
   const [recipe, setRecipe] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [ingredients, setIngredients] = useState([]);
   const [measure, setMeasures] = useState([]);
+  const [ingredientsCheck, setIngredientsCheck] = useState([]);
   const { id } = useParams();
   const history = useHistory();
   const fetchRecipe = useCallback(
@@ -21,6 +38,10 @@ function FoodInProgress() {
   useEffect(() => {
     fetchRecipe();
   }, [fetchRecipe]);
+
+  useEffect(() => {
+    startRecipe(id, setIngredientsCheck);
+  }, [id]);
 
   const getIngredients = useCallback(
     () => {
@@ -49,11 +70,21 @@ function FoodInProgress() {
   }
 
   function check({ target }) {
+    const inProgressIngredient = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const value = target.parentNode.innerText;
     const isChecked = target.parentNode.classList;
+    console.log(value);
     if (isChecked.contains('checked')) {
-      isChecked.remove('checked');
+      const filterIngredient = inProgressIngredient.meals[id].filter((item) => (
+        item !== value
+      ));
+      inProgressIngredient.meals[id] = filterIngredient;
+      setIngredientsCheck(filterIngredient);
+      localStorage.setItem('inProgressRecipes', JSON.stringify(inProgressIngredient));
     } else {
-      isChecked.add('checked');
+      setIngredientsCheck([...ingredientsCheck, value]);
+      inProgressIngredient.meals[id].push(value);
+      localStorage.setItem('inProgressRecipes', JSON.stringify(inProgressIngredient));
     }
   }
 
@@ -77,10 +108,19 @@ function FoodInProgress() {
       <ol>
         {ingredients.map((item, index) => (
           <li
+            className={
+              ingredientsCheck.includes(`${item} - ${measure[index]}`) ? 'checked' : null
+            }
             data-testid={ `data-testid=${index}-ingredient-step` }
             key={ index }
           >
-            <input type="checkbox" onChange={ check } />
+            <input
+              type="checkbox"
+              checked={
+                ingredientsCheck.includes(`${item} - ${measure[index]}`)
+              }
+              onChange={ check }
+            />
             {`${item} - ${measure[index]}`}
           </li>
         ))}

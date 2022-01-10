@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import CardsListRecomendation from '../../components/CardListRecomendation';
 import { fetchDrinksRecipeByID,
   fetchRecomendation, FOOD_NAME_URL } from '../../helpers/fetchApi';
@@ -9,6 +9,7 @@ import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import saveDrink from '../../helpers/saveDrinkLocalStorage';
 import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
+import RedirectButton from '../../components/RedirectButton';
 
 const copy = require('clipboard-copy');
 
@@ -24,6 +25,19 @@ function getMeasuresFiltered(recipe) {
     .map((item) => recipe[item]);
 }
 
+function startRecipe(id) {
+  const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+  if (!inProgress) {
+    localStorage.setItem('inProgressRecipes', JSON.stringify({
+      cocktails: { [id]: [] },
+      meals: {},
+    }));
+  } else {
+    inProgress.cocktails[id] = [];
+    localStorage.setItem('inProgressRecipes', JSON.stringify(inProgress));
+  }
+}
+
 function DrinksDetails() {
   const [recipe, setRecipe] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +48,6 @@ function DrinksDetails() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInProgress, setIsInProgress] = useState(false);
 
-  const history = useHistory();
   const { id } = useParams();
 
   const fetchRecipe = useCallback(
@@ -73,7 +86,6 @@ function DrinksDetails() {
   useEffect(() => {
     const { cocktails } = getInfo('inProgressRecipes');
     if (cocktails) {
-      console.log(cocktails);
       const ids = Object.keys(cocktails);
       const checkRecipe = ids.some((item) => item === id);
       if (checkRecipe) {
@@ -144,16 +156,24 @@ function DrinksDetails() {
         recomendations={ foodsList }
       />
 
-      <button
-        onClick={ () => {
-          history.push(`/bebidas/${id}/in-progress`);
-        } }
-        className="start-recipe"
-        type="button"
-        data-testid="start-recipe-btn"
-      >
-        {isInProgress ? 'Continuar Receita' : 'Iniciar Receita'}
-      </button>
+      {
+        isInProgress
+          ? (
+            <RedirectButton
+              title="Continuar Receita"
+              testId="start-recipe-btn"
+              className="start-recipe"
+              path={ `/bebidas/${id}/in-progress` }
+            />)
+          : (
+            <RedirectButton
+              title="Iniciar Receita"
+              testId="start-recipe-btn"
+              className="start-recipe"
+              path={ `/bebidas/${id}/in-progress` }
+              func={ () => startRecipe(id) }
+            />)
+      }
     </div>
   );
 }

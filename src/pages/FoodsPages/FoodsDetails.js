@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router';
+import { useParams } from 'react-router';
 import CardsListRecomendation from '../../components/CardListRecomendation';
 import { DRINK_NAME_URL,
   fetchMealsRecipeByID, fetchRecomendation } from '../../helpers/fetchApi';
@@ -9,6 +9,7 @@ import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import saveMeal from '../../helpers/saveMealLocalStorage';
 import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
+import RedirectButton from '../../components/RedirectButton';
 
 const copy = require('clipboard-copy');
 
@@ -22,7 +23,6 @@ function FoodsDetails() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInProgress, setIsInProgress] = useState(false);
 
-  const history = useHistory();
   const { id } = useParams();
 
   const fetchRecipe = useCallback(
@@ -47,7 +47,6 @@ function FoodsDetails() {
 
   const getMeasures = useCallback(
     () => {
-      console.log(recipe);
       const measuresFiltered = Object.keys(recipe)
         .filter((item) => item.includes('strMeasure'))
         .filter((item) => (recipe[item] !== ' ' && recipe[item] !== null))
@@ -59,10 +58,6 @@ function FoodsDetails() {
   useEffect(() => {
     getIngredients();
     getMeasures();
-
-    // return () => {
-    //   console.log('a');
-    // };
   }, [getIngredients, getMeasures]);
 
   useEffect(() => {
@@ -157,14 +152,23 @@ function FoodsDetails() {
         recomendations={ drinksList }
       />
 
-      <button
-        onClick={ () => history.push(`/comidas/${id}/in-progress`) }
-        className="start-recipe"
-        type="button"
-        data-testid="start-recipe-btn"
-      >
-        {isInProgress ? 'Continuar Receita' : 'Iniciar Receita'}
-      </button>
+      {
+        isInProgress
+          ? (
+            <RedirectButton
+              title="Continuar Receita"
+              testId="start-recipe-btn"
+              className="start-recipe"
+              path={ `/comidas/${id}/in-progress` }
+            />)
+          : (
+            <RedirectButton
+              title="Iniciar Receita"
+              testId="start-recipe-btn"
+              className="start-recipe"
+              path={ `/comidas/${id}/in-progress` }
+            />)
+      }
     </div>
   );
 }

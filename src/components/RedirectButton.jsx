@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useHistory } from 'react-router';
 
-function RedirectButton({ path, testId, title, func }) {
+function RedirectButton({ path, testId, title, func, className }) {
   const history = useHistory();
 
   function handleClick() {
@@ -15,6 +15,7 @@ function RedirectButton({ path, testId, title, func }) {
       onClick={ handleClick }
       type="button"
       data-testid={ testId }
+      className={ className }
     >
       { title }
     </button>
@@ -26,10 +27,12 @@ RedirectButton.propTypes = {
   testId: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   func: PropTypes.func,
+  className: PropTypes.string,
 };
 
 RedirectButton.defaultProps = {
   func: () => {},
+  className: '',
 };
 
 export default RedirectButton;

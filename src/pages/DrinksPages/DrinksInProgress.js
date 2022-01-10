@@ -5,6 +5,25 @@ import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
 import { fetchDrinksRecipeByID } from '../../helpers/fetchApi';
 import '../../styles/RecipesInProgress.css';
 
+const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+
+function startRecipe(id, setIngredientsCheck) {
+  if (!inProgress) {
+    localStorage.setItem('inProgressRecipes', JSON.stringify({
+      cocktails: { [id]: [] },
+      meals: {},
+    }));
+    console.log('v');
+  } else if (inProgress.cocktails[id]) {
+    setIngredientsCheck(inProgress.cocktails[id]);
+    console.log('a');
+  } else {
+    console.log('b');
+    inProgress.cocktails[id] = [];
+    localStorage.setItem('inProgressRecipes', JSON.stringify(inProgress));
+  }
+}
+
 function DrinksInProgress() {
   const [recipe, setRecipe] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -12,6 +31,7 @@ function DrinksInProgress() {
   const [measure, setMeasures] = useState([]);
   const { id } = useParams();
   const history = useHistory();
+  const [ingredientsCheck, setIngredientsCheck] = useState([]);
   const fetchRecipe = useCallback(
     async () => {
       const { drinks } = await fetchDrinksRecipeByID(id);
@@ -22,6 +42,10 @@ function DrinksInProgress() {
   useEffect(() => {
     fetchRecipe();
   }, [fetchRecipe]);
+
+  useEffect(() => {
+    startRecipe(id, setIngredientsCheck);
+  }, [id]);
 
   function getMeasuresFiltered(ingredient) {
     return Object.keys(ingredient)
@@ -37,7 +61,6 @@ function DrinksInProgress() {
   );
   const getMeasures = useCallback(
     () => {
-      console.log(recipe);
       const measuresFiltered = Object.keys(recipe)
         .filter((item) => item.includes('strMeasure'))
         .filter((item) => (recipe[item] !== ' ' && recipe[item] !== null))
@@ -61,24 +84,28 @@ function DrinksInProgress() {
     );
   }
 
-  // function handleLocalStorage() {
-  //   const recipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
-  //   // const ingredientsDone = recipes.cocktails[id];
-  //   return recipes;
-  // }
-
   function check({ target }) {
+    const inProgressIngredient = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const value = target.parentNode.innerText;
     const isChecked = target.parentNode.classList;
+    console.log(isChecked);
     if (isChecked.contains('checked')) {
-      isChecked.remove('checked');
+      const filterIngredient = inProgressIngredient.cocktails[id].filter((item) => (
+        item !== value
+      ));
+      inProgressIngredient.cocktails[id] = filterIngredient;
+      setIngredientsCheck(filterIngredient);
+      localStorage.setItem('inProgressRecipes', JSON.stringify(inProgressIngredient));
+      console.log('Nocheck');
     } else {
-      isChecked.add('checked');
-      // const newIngredient = {
-      //   ...handleLocalStorage(),
+      setIngredientsCheck([...ingredientsCheck, value]);
+      inProgressIngredient.cocktails[id].push(value);
+      localStorage.setItem('inProgressRecipes', JSON.stringify(inProgressIngredient));
+      console.log(value);
+      console.log(inProgressIngredient);
     }
-    // newIngredient.cocktails[id].toggle(target.innerText);
-    // localStorage.setItem('inProgressRecipes', JSON.stringify(newIngredient));
   }
+
   return (
     <div>
       <h3 data-testid="recipe-title">{recipe.strDrink}</h3>
@@ -99,10 +126,21 @@ function DrinksInProgress() {
       <ol>
         {ingredients.map((item, index) => (
           <li
+            className={
+              ingredientsCheck.includes(`${item} - ${measure[index]}`) ? 'checked' : null
+            }
             data-testid={ `data-testid=${index}-ingredient-step` }
             key={ index }
           >
-            <input type="checkbox" onChange={ check } />
+            <input
+              type="checkbox"
+              onChange={ check }
+              checked={
+                ingredientsCheck.includes(`${item} - ${measure[index]}`)
+              }
+            />
+            { console.log(ingredientsCheck) }
+            { console.log(ingredientsCheck.includes(`${item} - ${measure[index]}`)) }
             {`${item} - ${measure[index]}`}
           </li>
         ))}

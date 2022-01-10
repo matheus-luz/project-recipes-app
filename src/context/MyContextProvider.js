@@ -3,12 +3,15 @@ import React, { useState } from 'react';
 import MyContext from './MyContext';
 
 function MyContextProvider({ children }) {
+  const [email, setEmail] = useState('');
   const [requestAPI, setRequestAPI] = useState([]);
   const [isFilterOn, setIsFilterOn] = useState(false);
   const [typeOfSearch, setTypeOfSearch] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const data = {
+    email,
+    setEmail,
     requestAPI,
     setRequestAPI,
     isLoading,
