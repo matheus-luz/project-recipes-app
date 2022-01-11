@@ -4,22 +4,6 @@ import { useHistory } from 'react-router-dom';
 import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
 import { fetchMealsRecipeByID } from '../../helpers/fetchApi';
 
-const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
-
-function startRecipe(id, setIngredientsCheck) {
-  if (!inProgress) {
-    localStorage.setItem('inProgressRecipes', JSON.stringify({
-      meals: { [id]: [] },
-      cocktails: {},
-    }));
-  } else if (inProgress.meals[id]) {
-    setIngredientsCheck(inProgress.meals[id]);
-  } else {
-    inProgress.meals[id] = [];
-    localStorage.setItem('inProgressRecipes', JSON.stringify(inProgress));
-  }
-}
-
 function FoodInProgress() {
   const [recipe, setRecipe] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,12 +19,29 @@ function FoodInProgress() {
       setIsLoading(false);
     }, [id],
   );
+
+  const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+
+  function startRecipe() {
+    if (!inProgress) {
+      localStorage.setItem('inProgressRecipes', JSON.stringify({
+        meals: { [id]: [] },
+        cocktails: {},
+      }));
+    } else if (inProgress.meals[id]) {
+      setIngredientsCheck(inProgress.meals[id]);
+    } else {
+      inProgress.meals[id] = [];
+      localStorage.setItem('inProgressRecipes', JSON.stringify(inProgress));
+    }
+  }
   useEffect(() => {
     fetchRecipe();
   }, [fetchRecipe]);
 
   useEffect(() => {
-    startRecipe(id, setIngredientsCheck);
+    startRecipe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const getIngredients = useCallback(
@@ -71,19 +72,15 @@ function FoodInProgress() {
 
   function check({ target }) {
     const inProgressIngredient = JSON.parse(localStorage.getItem('inProgressRecipes'));
-    const value = target.parentNode.innerText;
-    const isChecked = target.parentNode.classList;
-    console.log(value);
-    if (isChecked.contains('checked')) {
-      const filterIngredient = inProgressIngredient.meals[id].filter((item) => (
-        item !== value
-      ));
+    const valueIn = target.value;
+    if (ingredientsCheck.includes(valueIn)) {
+      const filterIngredient = ingredientsCheck.filter((item) => item !== valueIn);
       inProgressIngredient.meals[id] = filterIngredient;
       setIngredientsCheck(filterIngredient);
       localStorage.setItem('inProgressRecipes', JSON.stringify(inProgressIngredient));
     } else {
-      setIngredientsCheck([...ingredientsCheck, value]);
-      inProgressIngredient.meals[id].push(value);
+      setIngredientsCheck([...ingredientsCheck, valueIn]);
+      inProgressIngredient.meals[id].push(valueIn);
       localStorage.setItem('inProgressRecipes', JSON.stringify(inProgressIngredient));
     }
   }
@@ -108,17 +105,13 @@ function FoodInProgress() {
       <ol>
         {ingredients.map((item, index) => (
           <li
-            className={
-              ingredientsCheck.includes(`${item} - ${measure[index]}`) ? 'checked' : null
-            }
-            data-testid={ `data-testid=${index}-ingredient-step` }
+            data-testid={ `${index}-ingredient-step` }
             key={ index }
           >
             <input
               type="checkbox"
-              checked={
-                ingredientsCheck.includes(`${item} - ${measure[index]}`)
-              }
+              value={ `${item} - ${measure[index]}` }
+              checked={ ingredientsCheck.includes(`${item} - ${measure[index]}`) }
               onChange={ check }
             />
             {`${item} - ${measure[index]}`}

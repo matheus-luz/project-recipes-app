@@ -5,25 +5,6 @@ import getIngredientsFiltered from '../../helpers/getIngredientsFiltred';
 import { fetchDrinksRecipeByID } from '../../helpers/fetchApi';
 import '../../styles/RecipesInProgress.css';
 
-const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
-
-function startRecipe(id, setIngredientsCheck) {
-  if (!inProgress) {
-    localStorage.setItem('inProgressRecipes', JSON.stringify({
-      cocktails: { [id]: [] },
-      meals: {},
-    }));
-    console.log('v');
-  } else if (inProgress.cocktails[id]) {
-    setIngredientsCheck(inProgress.cocktails[id]);
-    console.log('a');
-  } else {
-    console.log('b');
-    inProgress.cocktails[id] = [];
-    localStorage.setItem('inProgressRecipes', JSON.stringify(inProgress));
-  }
-}
-
 function DrinksInProgress() {
   const [recipe, setRecipe] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,12 +20,29 @@ function DrinksInProgress() {
       setIsLoading(false);
     }, [id],
   );
+
+  const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+
+  function startRecipe() {
+    if (!inProgress) {
+      localStorage.setItem('inProgressRecipes', JSON.stringify({
+        cocktails: { [id]: [] },
+        meals: {},
+      }));
+    } else if (inProgress.cocktails[id]) {
+      setIngredientsCheck(inProgress.cocktails[id]);
+    } else {
+      inProgress.cocktails[id] = [];
+      localStorage.setItem('inProgressRecipes', JSON.stringify(inProgress));
+    }
+  }
   useEffect(() => {
     fetchRecipe();
   }, [fetchRecipe]);
 
   useEffect(() => {
-    startRecipe(id, setIngredientsCheck);
+    startRecipe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   function getMeasuresFiltered(ingredient) {
@@ -86,23 +84,18 @@ function DrinksInProgress() {
 
   function check({ target }) {
     const inProgressIngredient = JSON.parse(localStorage.getItem('inProgressRecipes'));
-    const value = target.parentNode.innerText;
-    const isChecked = target.parentNode.classList;
-    console.log(isChecked);
-    if (isChecked.contains('checked')) {
+    const valueIn = target.value;
+    if (ingredientsCheck.includes(valueIn)) {
       const filterIngredient = inProgressIngredient.cocktails[id].filter((item) => (
-        item !== value
+        item !== valueIn
       ));
       inProgressIngredient.cocktails[id] = filterIngredient;
       setIngredientsCheck(filterIngredient);
       localStorage.setItem('inProgressRecipes', JSON.stringify(inProgressIngredient));
-      console.log('Nocheck');
     } else {
-      setIngredientsCheck([...ingredientsCheck, value]);
-      inProgressIngredient.cocktails[id].push(value);
+      setIngredientsCheck([...ingredientsCheck, valueIn]);
+      inProgressIngredient.cocktails[id].push(valueIn);
       localStorage.setItem('inProgressRecipes', JSON.stringify(inProgressIngredient));
-      console.log(value);
-      console.log(inProgressIngredient);
     }
   }
 
@@ -126,21 +119,15 @@ function DrinksInProgress() {
       <ol>
         {ingredients.map((item, index) => (
           <li
-            className={
-              ingredientsCheck.includes(`${item} - ${measure[index]}`) ? 'checked' : null
-            }
-            data-testid={ `data-testid=${index}-ingredient-step` }
+            data-testid={ `${index}-ingredient-step` }
             key={ index }
           >
             <input
               type="checkbox"
+              value={ `${item} - ${measure[index]}` }
               onChange={ check }
-              checked={
-                ingredientsCheck.includes(`${item} - ${measure[index]}`)
-              }
+              checked={ ingredientsCheck.includes(`${item} - ${measure[index]}`) }
             />
-            { console.log(ingredientsCheck) }
-            { console.log(ingredientsCheck.includes(`${item} - ${measure[index]}`)) }
             {`${item} - ${measure[index]}`}
           </li>
         ))}
